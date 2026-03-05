@@ -2,7 +2,7 @@ package user;
 
 import base.BaseData;
 import io.qameta.allure.Description;
-import org.hamcrest.Matchers;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,9 +16,10 @@ import java.util.stream.Stream;
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.BDDMockito.then;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CreateUserTest extends BaseData {
+public class AuthUserTest extends BaseData {
     static UserCreateHelpers createUser;
     private boolean userCreated;
 
@@ -27,50 +28,54 @@ public class CreateUserTest extends BaseData {
         createUser = new UserCreateHelpers();
     }
 
-    @Description("Создание пользователя. Позитивная проверка")
+    @Description("Авторизация пользователя. Позитивная проверка")
     @Test
-    public void createNewUserTest() {
+    public void authUserTest() {
         createUser.createNewUser()
+                .then()
+                .statusCode(SC_OK)
+                .body("success", equalTo(true));
+
+        createUser.authUser()
                 .then()
                 .statusCode(SC_OK)
                 .body("success", equalTo(true))
                 .body("user.email", equalTo(UserData.EMAIL))
                 .body("user.name", equalTo(UserData.NAME))
                 .body("accessToken", notNullValue())
-                .body("refreshToken", notNullValue());
+                .body("refreshToken", notNullValue());;
         userCreated = true;
     }
 
-    @Description("Попытка создания пользователя с неполными данными")
+    @Description("Попытка авторизации пользователя с неполными данными")
     @ParameterizedTest
     @MethodSource("provider")
-    public void createUserNotAllFieldsTransmittedTest(String email, String password, String login) {
-        createUser.createNewUser(email, password, login)
+    public void authUserNotAllFieldsTransmittedTest(String email, String password, String name) {
+        createUser.createNewUser();
+        createUser.authUser(email, password, name)
                 .then()
-                .statusCode(SC_FORBIDDEN)
+                .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false),
-                        "message", equalTo("Email, password and name are required fields"));
-        userCreated = false;
-    }
-
-    @Description("Попытка создания юзера уже с существующими данными")
-    @Test
-    public void creatingUserWithExistingLoginTest() {
-        createUser.createNewUser()
-                .then()
-                .statusCode(SC_OK);
-        createUser.createNewUser()
-                .then()
-                .statusCode(SC_FORBIDDEN)
-                .body("success", Matchers.equalTo(false),
-                "message", equalTo("User already exists"));
+                        "message", equalTo("email or password are incorrect"));
         userCreated = true;
     }
+
     private static Stream<Arguments> provider() {
         return Stream.of(
                 Arguments.of(UserData.EMAIL, null, UserData.NAME),
-                Arguments.of(null, UserData.PASSWORD, UserData.NAME),
-                Arguments.of(UserData.EMAIL, UserData.PASSWORD, null));
+                Arguments.of(null, UserData.PASSWORD, UserData.NAME));
+    }
+
+    @Description("Попытка авторизации пользователя с отсутствующим необязательным полем name")
+    @Test
+    public void authUserNotNameFieldsTransmittedTest() {
+        createUser.createNewUser()
+                .then()
+                .statusCode(SC_OK);
+        createUser.authUser(UserData.EMAIL,UserData.PASSWORD,null)
+                .then()
+                .statusCode(SC_OK);
+        userCreated = true;
     }
 
     @AfterEach
