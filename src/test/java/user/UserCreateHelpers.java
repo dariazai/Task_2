@@ -29,7 +29,7 @@ public class UserCreateHelpers {
     }
 
     @Step("Авторизация нового пользователя")
-    public Response authUser(String email, String password, String name) {
+    public static Response authUser(String email, String password, String name) {
         UserParameter userParameter = new UserParameter(email, password, name);
         Response response =
                 given()
@@ -42,10 +42,9 @@ public class UserCreateHelpers {
     }
 
     @Step("Авторизация нового пользователя")
-    public Response authUser() {
+    public static Response authUser() {
         return authUser(UserData.EMAIL, UserData.PASSWORD, UserData.NAME);
     }
-
 
 
     @Step("Удаление пользователя")
@@ -61,10 +60,26 @@ public class UserCreateHelpers {
         response.then()
                 .statusCode(SC_ACCEPTED)
                 .body("success", equalTo(true))
-                .body("message",equalTo( "User successfully removed"));
+                .body("message", equalTo("User successfully removed"));
 
         return response;
     }
+
+    @Step("Удаление пользователя ")
+    public Response deleteUserNoToken(String accessToken) {
+        Response response =
+                given()
+                        .header("Authorization", accessToken)
+                        .when()
+                        .delete("/api/auth/user");
+        response.then()
+                .statusCode(SC_ACCEPTED)
+                .body("success", equalTo(true))
+                .body("message", equalTo("User successfully removed"));
+
+        return response;
+    }
+
     @Step("Логин пользователя")
     public Response loginUser(String email, String password, String name) {
         UserParameter userParameter = new UserParameter(email, password, name);
@@ -75,5 +90,29 @@ public class UserCreateHelpers {
                         .when()
                         .post("/api/auth/login");
         return response;
+    }
+
+    @Step("Логин пользователя")
+    public Response loginUser() {
+        return authUser(UserData.EMAIL, UserData.PASSWORD, UserData.NAME);
+    }
+
+    @Step("Изменение данных для авторизованного пользователя")
+    public Response changeUserData(String email, String password, String name, String accessToken) {
+        UserParameter userParameter = new UserParameter(email, password, name);
+
+        Response response =
+                given()
+                        .contentType("application/json")
+                        .header("Authorization", accessToken)
+                        .body(userParameter)
+                        .when()
+                        .patch("/api/auth/user");
+        return response;
+    }
+
+    @Step("Изменение данных для авторизованного пользователя")
+    public Response changeUserData(String accessToken) {
+        return changeUserData(UserData.EMAIL, UserData.PASSWORD, UserData.NAME, accessToken);
     }
 }

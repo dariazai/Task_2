@@ -21,7 +21,7 @@ import static org.mockito.BDDMockito.then;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuthUserTest extends BaseData {
     static UserCreateHelpers createUser;
-    private boolean userCreated;
+
 
     @BeforeAll
     public static void setUp() {
@@ -44,7 +44,7 @@ public class AuthUserTest extends BaseData {
                 .body("user.name", equalTo(UserData.NAME))
                 .body("accessToken", notNullValue())
                 .body("refreshToken", notNullValue());;
-        userCreated = true;
+
     }
 
     @Description("Попытка авторизации пользователя с неполными данными")
@@ -57,7 +57,7 @@ public class AuthUserTest extends BaseData {
                 .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false),
                         "message", equalTo("email or password are incorrect"));
-        userCreated = true;
+
     }
 
     private static Stream<Arguments> provider() {
@@ -75,13 +75,11 @@ public class AuthUserTest extends BaseData {
         createUser.authUser(UserData.EMAIL,UserData.PASSWORD,null)
                 .then()
                 .statusCode(SC_OK);
-        userCreated = true;
+
     }
 
     @AfterEach
     public void afterEach() {
-        if (userCreated) {
             createUser.deleteUser();
-        }
     }
 }
