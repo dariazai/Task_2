@@ -12,4 +12,3 @@ public class UserParameter {
     private String password;
     private String name;
 }
-

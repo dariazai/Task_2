@@ -63,9 +63,10 @@ public class CreateUserTest extends BaseData {
                 .then()
                 .statusCode(SC_FORBIDDEN)
                 .body("success", Matchers.equalTo(false),
-                "message", equalTo("User already exists"));
+                        "message", equalTo("User already exists"));
         userCreated = true;
     }
+
     private static Stream<Arguments> provider() {
         return Stream.of(
                 Arguments.of(UserData.EMAIL, null, UserData.NAME),

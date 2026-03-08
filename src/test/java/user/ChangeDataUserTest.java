@@ -14,12 +14,12 @@ public class ChangeDataUserTest extends BaseData {
     static UserCreateHelpers createUser;
     static ChangeUserDataHelpers changeUser;
     String accessToken;
+
     @BeforeAll
     public static void setUp() {
         createUser = new UserCreateHelpers();
         changeUser = new ChangeUserDataHelpers();
     }
-
 
     @Description("Изменение данных пользователя. Позитивная проверка")
     @Test
@@ -37,7 +37,6 @@ public class ChangeDataUserTest extends BaseData {
                 .body("success", equalTo(true))
                 .body("user.email", equalTo(UserData.CH_EMAIL))
                 .body("user.name", equalTo(UserData.CH_NAME));
-
     }
 
     @Description("Изменение данных пользователя без авторизации.")
@@ -47,10 +46,10 @@ public class ChangeDataUserTest extends BaseData {
                 .then()
                 .statusCode(SC_OK)
                 .body("success", equalTo(true));
-         accessToken = createUser.authUser()
+        accessToken = createUser.authUser()
                 .jsonPath()
                 .getString("accessToken");
-        changeUser.changeUserData(UserData.CH_EMAIL, UserData.CH_PASSWORD, UserData.CH_NAME,null)
+        changeUser.changeUserData(UserData.CH_EMAIL, UserData.CH_PASSWORD, UserData.CH_NAME, null)
                 .then()
                 .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false))
@@ -59,6 +58,6 @@ public class ChangeDataUserTest extends BaseData {
 
     @AfterEach
     public void afterEach() {
-        createUser.deleteUserNoToken(accessToken);;
+        createUser.deleteUserNoToken(accessToken);
     }
 }

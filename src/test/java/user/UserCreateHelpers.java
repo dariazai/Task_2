@@ -1,14 +1,11 @@
 package user;
 
 import io.qameta.allure.Step;
-import io.qameta.allure.internal.shadowed.jackson.databind.ObjectMapper;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_ACCEPTED;
-import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
 public class UserCreateHelpers {
     @Step("Создание нового пользователя")
@@ -61,7 +58,6 @@ public class UserCreateHelpers {
                 .statusCode(SC_ACCEPTED)
                 .body("success", equalTo(true))
                 .body("message", equalTo("User successfully removed"));
-
         return response;
     }
 
@@ -76,7 +72,6 @@ public class UserCreateHelpers {
                 .statusCode(SC_ACCEPTED)
                 .body("success", equalTo(true))
                 .body("message", equalTo("User successfully removed"));
-
         return response;
     }
 
@@ -109,10 +104,5 @@ public class UserCreateHelpers {
                         .when()
                         .patch("/api/auth/user");
         return response;
-    }
-
-    @Step("Изменение данных для авторизованного пользователя")
-    public Response changeUserData(String accessToken) {
-        return changeUserData(UserData.EMAIL, UserData.PASSWORD, UserData.NAME, accessToken);
     }
 }

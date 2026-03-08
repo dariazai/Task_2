@@ -14,10 +14,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LoginUserTest extends BaseData {
-
-
         static UserCreateHelpers createUser;
-        private boolean userCreated;
 
         @BeforeAll
         public static void setUp() {
@@ -41,6 +38,7 @@ public class LoginUserTest extends BaseData {
                     .body("accessToken", notNullValue())
                     .body("refreshToken", notNullValue());;
         }
+
     @Description("Логин пользователя с неверным логином и паролем")
     @Test
     public void loginIncorrectDataTest() {
@@ -54,8 +52,8 @@ public class LoginUserTest extends BaseData {
                 .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false))
                 .body("message", equalTo("email or password are incorrect"));
-
     }
+
     @AfterEach
     public void afterEach() {
         createUser.deleteUser();

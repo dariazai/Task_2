@@ -2,7 +2,6 @@ package user;
 
 import base.BaseData;
 import io.qameta.allure.Description;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,12 +15,10 @@ import java.util.stream.Stream;
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.BDDMockito.then;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuthUserTest extends BaseData {
     static UserCreateHelpers createUser;
-
 
     @BeforeAll
     public static void setUp() {
@@ -43,8 +40,7 @@ public class AuthUserTest extends BaseData {
                 .body("user.email", equalTo(UserData.EMAIL))
                 .body("user.name", equalTo(UserData.NAME))
                 .body("accessToken", notNullValue())
-                .body("refreshToken", notNullValue());;
-
+                .body("refreshToken", notNullValue());
     }
 
     @Description("Попытка авторизации пользователя с неполными данными")
@@ -57,7 +53,6 @@ public class AuthUserTest extends BaseData {
                 .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false),
                         "message", equalTo("email or password are incorrect"));
-
     }
 
     private static Stream<Arguments> provider() {
@@ -72,14 +67,13 @@ public class AuthUserTest extends BaseData {
         createUser.createNewUser()
                 .then()
                 .statusCode(SC_OK);
-        createUser.authUser(UserData.EMAIL,UserData.PASSWORD,null)
+        createUser.authUser(UserData.EMAIL, UserData.PASSWORD, null)
                 .then()
                 .statusCode(SC_OK);
-
     }
 
     @AfterEach
     public void afterEach() {
-            createUser.deleteUser();
+        createUser.deleteUser();
     }
 }
