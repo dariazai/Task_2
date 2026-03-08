@@ -17,6 +17,7 @@ public class CreateOrderTest extends BaseTest {
     static OrderHelpers newOrder;
     static UserCreateHelpers createUser;
     private boolean userCreated;
+
     @BeforeAll
     public static void setUp() {
         newOrder = new OrderHelpers();

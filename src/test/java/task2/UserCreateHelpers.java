@@ -91,17 +91,4 @@ public class UserCreateHelpers {
     public Response loginUser() {
         return authUser(UserData.EMAIL, UserData.PASSWORD, UserData.NAME);
     }
-
-    @Step("Изменение данных для авторизованного пользователя")
-    public Response changeUserData(String email, String password, String name, String accessToken) {
-        UserParameter userParameter = new UserParameter(email, password, name);
-        Response response =
-                given()
-                        .contentType("application/json")
-                        .header("Authorization", accessToken)
-                        .body(userParameter)
-                        .when()
-                        .patch("/api/auth/user");
-        return response;
-    }
 }

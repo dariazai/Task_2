@@ -3,7 +3,6 @@ package task2;
 import base.BaseTest;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
