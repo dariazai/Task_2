@@ -1,4 +1,4 @@
-package user;
+package task2;
 
 import lombok.Data;
 import lombok.AllArgsConstructor;

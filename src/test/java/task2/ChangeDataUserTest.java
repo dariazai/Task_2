@@ -1,27 +1,28 @@
-package user;
+package task2;
 
-import base.BaseData;
+import base.BaseTest;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.hamcrest.Matchers.equalTo;
 
-public class ChangeDataUserTest extends BaseData {
+public class ChangeDataUserTest extends BaseTest {
     static UserCreateHelpers createUser;
     static ChangeUserDataHelpers changeUser;
     String accessToken;
 
-    @BeforeAll
-    public static void setUp() {
-        createUser = new UserCreateHelpers();
+    @BeforeEach
+    public  void setUp() {
         changeUser = new ChangeUserDataHelpers();
+        createUser = new UserCreateHelpers();
     }
 
-    @Description("Изменение данных пользователя. Позитивная проверка")
+    @Description("Изменение данных пользователя с авторизацией. Позитивная проверка")
     @Test
     public void changeParameterUserTest() {
         createUser.createNewUser()

@@ -1,4 +1,4 @@
-package user;
+package task2;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
@@ -45,4 +45,5 @@ public class OrderHelpers {
                 .when()
                 .get("api/orders");
     }
+
 }

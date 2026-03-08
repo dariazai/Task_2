@@ -1,4 +1,4 @@
-package user;
+package task2;
 
 public class UserData {
     public static final String EMAIL = "test@testing.com";

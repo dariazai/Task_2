@@ -1,6 +1,6 @@
-package user;
+package task2;
 
-import base.BaseData;
+import base.BaseTest;
 import io.qameta.allure.Description;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CreateUserTest extends BaseData {
+public class CreateUserTest extends BaseTest {
     static UserCreateHelpers createUser;
     private boolean userCreated;
 

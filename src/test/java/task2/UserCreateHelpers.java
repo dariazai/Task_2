@@ -1,4 +1,4 @@
-package user;
+package task2;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
@@ -95,7 +95,6 @@ public class UserCreateHelpers {
     @Step("Изменение данных для авторизованного пользователя")
     public Response changeUserData(String email, String password, String name, String accessToken) {
         UserParameter userParameter = new UserParameter(email, password, name);
-
         Response response =
                 given()
                         .contentType("application/json")

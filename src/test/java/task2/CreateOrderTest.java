@@ -1,6 +1,6 @@
-package user;
+package task2;
 
-import base.BaseData;
+import base.BaseTest;
 import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CreateOrderTest extends BaseData {
+public class CreateOrderTest extends BaseTest {
     static OrderHelpers newOrder;
     static UserCreateHelpers createUser;
     private boolean userCreated;
@@ -25,14 +25,8 @@ public class CreateOrderTest extends BaseData {
     @Description("Создание заказа с ингридиентами неавторизованным пользователем")
     @Test
     public void createOrderWithIngTest() {
-        Response response = newOrder.getIngredients();
-        response.then()
-                .statusCode(SC_OK)
-                .body("success", equalTo(true))
-                .body("data", notNullValue());
-
-        String firstIngredient = response.jsonPath().getString("data[0]._id");
-        Response responseNewOrder= newOrder.createOrder(firstIngredient,null);
+        String ingredient = getFirstIngredient();
+        Response responseNewOrder= newOrder.createOrder(ingredient,null);
         responseNewOrder.then()
                 .statusCode(SC_OK)
                 .body("success", equalTo(true))
@@ -41,7 +35,7 @@ public class CreateOrderTest extends BaseData {
         userCreated=false;
     }
 
-    @Description("Создание заказа без ингридиентами авторизованным пользователем")
+    @Description("Создание заказа без ингридиентов авторизованным пользователем")
     @Test
     public void createOrderWithoutIngAuthUserTest() {
         createUser = new UserCreateHelpers();
@@ -73,15 +67,8 @@ public class CreateOrderTest extends BaseData {
                 .jsonPath()
                 .getString("accessToken");
 
-        Response response = newOrder.getIngredients();
-
-        response.then()
-                .statusCode(SC_OK)
-                .body("success", equalTo(true))
-                .body("data", notNullValue());
-
-        String firstIngredient = response.jsonPath().getString("data[0]._id");
-        Response responseNewOrder= newOrder.createOrder(firstIngredient,accessToken);
+        String ingredient = getFirstIngredient();
+        Response responseNewOrder= newOrder.createOrder(ingredient,accessToken);
         responseNewOrder.then()
                 .statusCode(SC_OK)
                 .body("success", equalTo(true))
@@ -105,6 +92,17 @@ public class CreateOrderTest extends BaseData {
         responseNewOrder.then()
                 .statusCode(SC_INTERNAL_SERVER_ERROR);
         userCreated=true;
+    }
+
+    private String getFirstIngredient() {
+        Response response = newOrder.getIngredients();
+
+        response.then()
+                .statusCode(SC_OK)
+                .body("success", equalTo(true))
+                .body("data", notNullValue());
+
+        return response.jsonPath().getString("data[0]._id");
     }
 
     @AfterEach
